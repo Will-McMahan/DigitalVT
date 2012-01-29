@@ -1,0 +1,7 @@
+@misc{Barbic:2009:CGR,
+  author = "{Jernej Barbi\v{c}}",
+  title =  "{Computer graphics research code,
+             http://www.jernejbarbic.com/code}",
+  year = "2009",
+}
+
