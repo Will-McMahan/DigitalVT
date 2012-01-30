@@ -46,6 +46,7 @@
 *
 *********************************************************************/
 
+#include <time.h>
 #include <stdio.h>
 #include <conio.h>		// Needed for _kbhit()
 #include <windows.h>
@@ -76,6 +77,23 @@ int main(void)
 	dataFile = fopen( filename.c_str(), "wb");
 	//// Write a header for the file.
 	///* TO BE DONE */
+		int writeStatus = 0;
+		
+	/* Write a header for the file. */
+	writeStatus = fprintf(dataFile, "FILE_NAME:\t%s\n",filename.c_str() );	
+	// Write a time stamp.
+	time_t ltime; /* calendar time */
+    ltime=time(NULL); /* get current cal time */
+	writeStatus = fprintf(dataFile, "TIME_STAMP:\t%s",asctime( localtime(&ltime) ) );
+	writeStatus = fprintf(dataFile, "ACC_SENSOR:\tADXL322, 5V, ?Hz\n");
+	writeStatus = fprintf(dataFile, "ACC_UNIT:\tV\n");
+	writeStatus = fprintf(dataFile, "SAMPLE_RATE:\t%i\n", SAMPLE_RATE);
+	writeStatus = fprintf(dataFile, "DATA_FORMAT:\tFLOAT\n");
+	writeStatus = fprintf(dataFile, "DATA: [accMLx, accMLy, accMLz, accMRx, accMRy, accMRz]\n");
+	if (writeStatus < 0) {
+		printf("** Error writing header data to file. Is the file open? ***\n");
+		goto Error;
+	}
 
 	// Variables for NI Error Handling
 	int32 error=0;

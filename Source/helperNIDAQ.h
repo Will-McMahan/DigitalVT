@@ -93,7 +93,7 @@ Error:
 		
 		DAQmxStopTask(taskHandle);
 		DAQmxClearTask(taskHandle);
-		printf("%i, DAQmx Error: %s\n",totalNumWrote,errBuff);
+		printf("%i, DAQmx Error in Callback: %s\n",totalNumWrote,errBuff);
 	}
 	return 0;
 }
@@ -109,7 +109,7 @@ int32 CVICALLBACK DoneCallback(TaskHandle taskHandle, int32 status, void *callba
 Error:
 	if( DAQmxFailed(error) ) {
 		DAQmxGetExtendedErrorInfo(errBuff,2048);		
-		printf("DAQmx Error: %s\n",errBuff);
+		printf("DAQmx Error in Done: %s\n",errBuff);
 		DAQmxClearTask(taskHandle);
 	}
 	return 0;
@@ -126,7 +126,7 @@ int32 startContinuousAnalogRecording(TaskHandle& inputTaskHandle, FILE* dataFile
 	returnDAQmxErrChk (DAQmxCreateTask("OUT1",&h_output));
 	returnDAQmxErrChk (DAQmxCreateAOVoltageChan(h_output,"Dev1/ao0","",MIN_VOLT_CURRENT,MAX_VOLT_CURRENT,DAQmx_Val_Volts,NULL));
 	returnDAQmxErrChk (DAQmxCreateAOVoltageChan(h_output,"Dev1/ao1","",MIN_VOLT_CURRENT,MAX_VOLT_CURRENT,DAQmx_Val_Volts,NULL));
-	returnDAQmxErrChk (DAQmxCfgSampClkTiming(h_output,"OnboardClock",SAMPLE_RATE,DAQmx_Val_Rising,DAQmx_Val_ContSamps,SAMPLES_PER_CHANNEL));	
+	returnDAQmxErrChk (DAQmxCfgSampClkTiming(h_output,"OnboardClock",SAMPLE_RATE,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,SAMPLES_PER_CHANNEL));	
 
 	//returnDAQmxErrChk (DAQmxCreateTask("OUT2",&h_output2));
 	//returnDAQmxErrChk (DAQmxCreateAOVoltageChan(h_output2,"Dev1/ao1","",MIN_VOLT_CURRENT,MAX_VOLT_CURRENT,DAQmx_Val_Volts,NULL));
@@ -144,10 +144,11 @@ int32 startContinuousAnalogRecording(TaskHandle& inputTaskHandle, FILE* dataFile
 	returnDAQmxErrChk (DAQmxCreateTask("GetAnalog",&inputTaskHandle));
 
 	//acc1_in
-	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai31","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
-	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai23","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
-	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai30","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
-	
+	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai17","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
+	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai8","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
+	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai16","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
+	//returnDAQmxErrChk (DAQmxCreateAOVoltageChan(inputTaskHandle,"Dev1/ao0","",MIN_VOLT_CURRENT,MAX_VOLT_CURRENT,DAQmx_Val_Volts,NULL));
+
 	//acc2_in
 	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai29","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
 	returnDAQmxErrChk (DAQmxCreateAIVoltageChan(inputTaskHandle,"Dev1/ai21","",DAQmx_Val_RSE,MIN_VOLT_ACC,MAX_VOLT_ACC,DAQmx_Val_Volts,NULL));
@@ -155,7 +156,7 @@ int32 startContinuousAnalogRecording(TaskHandle& inputTaskHandle, FILE* dataFile
 	
 	// Set up timing.
 	returnDAQmxErrChk (DAQmxCfgSampClkTiming(inputTaskHandle, "OnboardClock", SAMPLE_RATE, DAQmx_Val_Rising, DAQmx_Val_ContSamps, SAMPLES_PER_CHANNEL));
-	returnDAQmxErrChk (DAQmxRegisterEveryNSamplesEvent(inputTaskHandle, DAQmx_Val_Acquired_Into_Buffer, SAMPLES_PER_CHANNEL, 0, EveryNCallback, NULL));
+	returnDAQmxErrChk (DAQmxRegisterEveryNSamplesEvent(inputTaskHandle, DAQmx_Val_Acquired_Into_Buffer, SAMPLES_PER_CHANNEL, 0, EveryNCallback, dataFile));
 	
 	// Registers a callback function to receive an event when a task stops due to an error or when a finite acquisition task or finite generation 
 	// task completes execution. A Done event does not occur when a task is stopped explicitly, such as by calling DAQmxStopTask.

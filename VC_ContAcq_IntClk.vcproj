@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="VC_ContAcq_IntClk"
+	Name="DigitalVT"
 	ProjectGUID="{E17F6106-F89F-4162-8CE2-7F383B9F23E2}"
 	TargetFrameworkVersion="131072"
 	>
@@ -395,10 +395,6 @@
 				RelativePath=".\Source\main.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\nidaq.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -416,10 +412,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\nidaq.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
