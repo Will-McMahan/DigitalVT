@@ -2,9 +2,9 @@ close all;
 clear all;
 %Conversion Factor for accelerometer 
 %NOTE: This is for the ADXL322, 5V accelerometer
-ACC_VOLTS_TO_MS2 = 1/(.75 * 9.81)   % m/s^2 / V
+ACC_VOLTS_TO_MS2 = 1/(.75 * 9.81);   % m/s^2 / V
 
-fid = fopen('test.txt', 'r');
+fid = fopen('test.dat', 'r');
 
 % Read the header... this will need to be parsed later.
 h_filename = fgetl(fid)
@@ -67,20 +67,26 @@ MasterAccRightz = data(6,:);
 
 figure(1);
 subplot(2,1,1);
-y = data(1,:)
+y = data(1,:);
 NFFT = 2^12;
 Y = fft(y, NFFT, 2);
 f = sample_rate/2*linspace(0,1,NFFT/2+1);
 %f_max = f(find(Y == max(Y(1:NFFT/2+1))))
 plot(f,2*abs(Y(1:NFFT/2+1))) 
-z = data(2,:)
+z = data(2,:);
 NFFT = 2^12;
 Z = fft(z, NFFT, 2);
 f = sample_rate/2*linspace(0,1,NFFT/2+1);
 hold on; 
 plot(f,2*abs(Z(1:NFFT/2+1)), 'r') 
 
+% Calculate delay
+lag = xcorr(y, z);
+delay = length(y) - find(lag == max(lag));
+
 subplot(2,1,2);
 plot(t, y, 'b'); hold on;
-plot(t, z, 'r');
+plot(t(1:end-delay), z((delay+1):end), 'r');
+title(['Delay is ' num2str(delay/sample_rate)]);
 %plot(t(1:end-1), y(1:end-1)-z(2:end), 'gx');
+

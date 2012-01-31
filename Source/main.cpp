@@ -58,7 +58,7 @@
 int main(void)
 {		
 	//// Setup the file variables
-	std::string filename = "test.txt";
+	std::string filename = "test.dat";
 
 	//if(fileExists(filename)) {
 	//	
@@ -130,7 +130,7 @@ Error:
 	/*********************************************/
 	printf("\n***Zeroing the Analog Output Channel.\n");
 	gotoDAQmxErrChk2 (DAQmxCreateTask("",&taskHandleForZeroAnalogOut));
-	gotoDAQmxErrChk2 (DAQmxCreateAOVoltageChan(taskHandleForZeroAnalogOut,"Dev1/ao3","Zero",0.0,5.0,DAQmx_Val_Volts,NULL));
+	gotoDAQmxErrChk2 (DAQmxCreateAOVoltageChan(taskHandleForZeroAnalogOut,"Dev1/ao0","Zero",0.0,5.0,DAQmx_Val_Volts,NULL));
 	gotoDAQmxErrChk2 (DAQmxCfgSampClkTiming(taskHandleForZeroAnalogOut,"",1000,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,5));
 
 	float64 zeroData[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
