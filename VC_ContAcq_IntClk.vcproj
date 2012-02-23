@@ -73,7 +73,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib nidaqmx.lib"
-				OutputFile="$(OutDir)/VC_ContAcq_IntClk.exe"
+				OutputFile="$(OutDir)/DigitalVT.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc"
@@ -164,7 +164,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib nidaqmx.lib"
-				OutputFile="$(OutDir)/VC_ContAcq_IntClk.exe"
+				OutputFile="$(OutDir)/DigitalVT.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc"
@@ -395,6 +395,10 @@
 				RelativePath=".\Source\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Source\nidaq.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -404,7 +408,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Source\helperNIDAQ.h"
+				RelativePath=".\Source\nidaq.h"
 				>
 			</File>
 			<File

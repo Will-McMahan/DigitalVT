@@ -1,4 +1,4 @@
-close all;
+%close all;
 clear all;
 %Conversion Factor for accelerometer 
 %NOTE: This is for the ADXL322, 5V accelerometer
@@ -64,8 +64,7 @@ MasterAccRightz = data(6,:);
 % xlabel('Time (s)')
 % ylabel('Currents (V)')
 
-
-figure(1);
+figure;
 subplot(2,1,1);
 y = data(1,:);
 NFFT = 2^12;
@@ -73,20 +72,26 @@ Y = fft(y, NFFT, 2);
 f = sample_rate/2*linspace(0,1,NFFT/2+1);
 %f_max = f(find(Y == max(Y(1:NFFT/2+1))))
 plot(f,2*abs(Y(1:NFFT/2+1))) 
-z = data(2,:);
+z = data(3,:);
 NFFT = 2^12;
 Z = fft(z, NFFT, 2);
 f = sample_rate/2*linspace(0,1,NFFT/2+1);
 hold on; 
 plot(f,2*abs(Z(1:NFFT/2+1)), 'r') 
 
+delay = 500;
+
 % Calculate delay
-lag = xcorr(y, z);
-delay = length(y) - find(lag == max(lag));
+[c, lags] = xcorr(y(1:1000), z(1:1000));
+delay = -lags(find(c == max(c),1))
 
 subplot(2,1,2);
-plot(t, y, 'b'); hold on;
-plot(t(1:end-delay), z((delay+1):end), 'r');
-title(['Delay is ' num2str(delay/sample_rate)]);
+title(['Delay is ' num2str(delay/sample_rate)]); hold on;
+plot(t, y, 'b');
+plot(t(1:end-delay), z(delay+1:end), 'r');
+%plot(t, z, 'r');
 %plot(t(1:end-1), y(1:end-1)-z(2:end), 'gx');
+%xlim([146.8 147.8])
+
+
 

@@ -51,8 +51,8 @@
 #include <conio.h>		// Needed for _kbhit()
 #include <windows.h>
 #include <string>
-#include "helperNIDAQ.h"
 #include "fileHelper.h"
+#include "nidaq.h"
 
 
 int main(void)
@@ -92,58 +92,11 @@ int main(void)
 	writeStatus = fprintf(dataFile, "DATA: [accMLx, accMLy, accMLz, accMRx, accMRy, accMRz]\n");
 	if (writeStatus < 0) {
 		printf("** Error writing header data to file. Is the file open? ***\n");
-		goto Error;
+		return 1;
 	}
 
-	// Variables for NI Error Handling
-	int32 error=0;
-	
-	// TaskHandle for analog input
-	TaskHandle  taskHandleForAnalogGather = 0;
-
-	/*********************************************/
-	// DAQmx Write Code
-	/*********************************************/
-
-	// Start continuous
-	gotoDAQmxErrChk (startContinuousAnalogRecording(taskHandleForAnalogGather, dataFile));
-	
-Error:
-	char errBuff[2048]={'\0'};
-	if( DAQmxFailed(error) )
-		DAQmxGetExtendedErrorInfo(errBuff,2048);
-	if( taskHandleForAnalogGather!=0 ) {
-		/*********************************************/
-		// DAQmx Stop Code
-		/*********************************************/
-		DAQmxStopTask(taskHandleForAnalogGather);
-		DAQmxClearTask(taskHandleForAnalogGather);
-	}
-	if( DAQmxFailed(error) )
-		printf("DAQmx Error: %s\n",errBuff);
-
-	// Try to Zero out the analog output
-	TaskHandle  taskHandleForZeroAnalogOut = 0;
-
-	/*********************************************/
-	// DAQmx Configure Code
-	/*********************************************/
-	printf("\n***Zeroing the Analog Output Channel.\n");
-	gotoDAQmxErrChk2 (DAQmxCreateTask("",&taskHandleForZeroAnalogOut));
-	gotoDAQmxErrChk2 (DAQmxCreateAOVoltageChan(taskHandleForZeroAnalogOut,"Dev1/ao0","Zero",0.0,5.0,DAQmx_Val_Volts,NULL));
-	gotoDAQmxErrChk2 (DAQmxCfgSampClkTiming(taskHandleForZeroAnalogOut,"",1000,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,5));
-
-	float64 zeroData[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
-	int32 tmp = 0;
-	gotoDAQmxErrChk2 ( DAQmxWriteAnalogF64(taskHandleForZeroAnalogOut,5,0,10.0,DAQmx_Val_GroupByChannel,zeroData,&tmp,NULL) );
-	
-	gotoDAQmxErrChk2 (DAQmxStartTask(taskHandleForZeroAnalogOut));
-	
-Error2:
-	if( DAQmxFailed(error) )
-		printf("DAQmx Error: %s\n",errBuff);
-	DAQmxStopTask(taskHandleForZeroAnalogOut);
-	DAQmxClearTask(taskHandleForZeroAnalogOut);
+	nidaq ni(dataFile);
+	ni.start();
 
 	// Close out the file.
 	fclose(dataFile);
