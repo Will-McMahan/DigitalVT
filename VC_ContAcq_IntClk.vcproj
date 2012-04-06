@@ -392,6 +392,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\Source\DigitalFilter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\main.cpp"
 				>
 			</File>
@@ -403,6 +407,10 @@
 		<Filter
 			Name="Header Files"
 			>
+			<File
+				RelativePath=".\Source\DigitalFilter.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Source\fileHelper.h"
 				>
