@@ -5,19 +5,21 @@
 #include <iostream>
 #include <iomanip>
 #include "performanceCounter.h"
+#include "DigitalFilter.h"
 #include <conio.h>		// Needed for _kbhit()
 
 using namespace std;
 
 // User set parameters
 #define MIN_VOLT_IN		 -5
-#define MAX_VOLT_IN		  5
+#define MAX_VOLT_IN		 5
 
 #define MIN_VOLT_OUT	 -5
 #define MAX_VOLT_OUT	  5
 
-#define SAMPLE_RATE				10000
-#define SAMPLES_PER_CHANNEL		250
+#define SAMPLE_RATE				4000
+#define SAMPLES_PER_CHANNEL		100
+
 #define NUM_INPUT_CHANNELS		6
 
 class nidaq
@@ -30,7 +32,7 @@ public:
 
 	void start();
 
-	FILE* fileHandle;
+	FILE* file_handle;
 
 private:
 	// Handles for input and output tasks.
@@ -47,5 +49,8 @@ private:
 	int num_input_channels;
 
 	void cleanup();
+
+	DigitalFilter *hpf_acc1;
+	DigitalFilter *hpf_acc2;
 
 };
